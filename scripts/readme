@@ -1,6 +1,0 @@
-sudo nano setup.sh
-
-
-
-sudo chmod +x ~/setup.sh
-sudo ./setup.sh
