@@ -1,18 +1,18 @@
 # 🔐 Secure Shared Development Environment Setup
 
-This project provides a **secure, encrypted development environment** using Docker, Ollama, and Open WebUI. It automatically detects GPU/CPU, installs necessary tools, creates an encrypted volume, and spins up a multi-modal AI environment with a modern frontend.
+This project sets up a **secure, encrypted development environment** using Docker, Ollama, and Open WebUI. It detects whether you're running a GPU or CPU machine, installs dependencies, creates an encrypted disk container, and launches an AI-ready interface.
 
 ---
 
 ## 🚀 Features
 
-- ✅ Automatically detects GPU or CPU
-- 🔐 Creates and mounts an encrypted data container at `/securedata`
+- ✅ Detects GPU or defaults to CPU
+- 🔐 Creates and mounts encrypted storage (`/securedata`)
 - 🐳 Installs Docker and Docker Compose
-- 🧠 Installs [Ollama](https://ollama.com) with the **Llama 3** base model
-- 🌐 Deploys [Open WebUI](https://github.com/open-webui/open-webui) on **port 3000**
-- 🔄 Runs Ollama as a system service via systemd
-- 📦 Supports both CPU-only and GPU-accelerated environments
+- 🧠 Installs [Ollama](https://ollama.com) without preloading models
+- 🌐 Launches [Open WebUI](https://github.com/open-webui/open-webui) on **port 3000**
+- 🔄 Runs Ollama as a system service using systemd
+- 💡 Supports both CPU-only and GPU-accelerated setups
 
 ---
 
@@ -45,7 +45,7 @@ chmod +x setup.sh
 sudo ./setup.sh
 ```
 
-📝 During setup, you’ll be prompted to enter the size of your encrypted container in **GB**.
+📝 During setup, you’ll be prompted to enter the size of your encrypted container in **GB** (e.g., `10` for 10 GB).
 
 ---
 
@@ -60,11 +60,11 @@ Here’s a quick reference:
 | Container Size | What You Can Fit                                 |
 |----------------|--------------------------------------------------|
 | **5 GB**       | Minimum: Open WebUI + 1 small model              |
-| **10 GB**      | Room for WebUI + 1–2 medium LLMs (e.g., Llama3)  |
+| **10 GB**      | Room for WebUI + 1–2 medium LLMs                 |
 | **20–30 GB**   | Several models + embeddings, chat history, etc.  |
 | **50+ GB**     | Ideal for experimentation and multiple models    |
 
-📦 **Recommended Minimum:**  
+**✅ Recommended Minimum:**  
 **10–20 GB** for a usable setup with room to grow.
 
 🧠 LLMs are large. For example:
@@ -74,40 +74,40 @@ Here’s a quick reference:
 
 ---
 
-## 🔐 Important: Change the Encryption Key
+## 🔐 Encryption Key Details
 
-By default, the script generates a random key stored at:
+This setup uses a **randomly generated encryption key**, stored at:
 
 ```
 /root/.securekey
 ```
 
-⚠️ You must **back up or rotate this key** if you care about the data. If it's deleted, the data cannot be recovered.
-
-> 🔥 If you modify the script to use a passphrase instead, avoid defaults like `"changeme"` and **set a secure passphrase**.
-
-### 🔄 Regenerate the encryption key (optional):
+- 🔒 This key is used to encrypt/decrypt the `/securedata` volume using LUKS.
+- 🧠 If this key is lost or deleted, you will not be able to access the encrypted data.
+- 🔄 You can regenerate the key with:
 
 ```bash
 sudo head -c 64 /dev/urandom > /root/.securekey
 sudo chmod 600 /root/.securekey
 ```
 
+> 💡 This setup **does not use any default passphrase** like `changeme`. If you modify the script to use a passphrase instead of a keyfile, make sure you set a strong passphrase.
+
 ---
 
 ## 🧠 Installed Services
 
-| Service       | Address                  | Description                     |
-|---------------|--------------------------|---------------------------------|
-| **Ollama**     | http://localhost:11434   | AI model backend                |
-| **Open WebUI** | http://localhost:3000    | Friendly frontend interface     |
-| **Encrypted Data**| `/securedata`         | Secure volume for persistent data |
+| Service        | URL/Path                 | Description                     |
+|----------------|--------------------------|---------------------------------|
+| **Ollama**     | http://localhost:11434   | AI model backend (no models pulled by default) |
+| **Open WebUI** | http://localhost:3000    | Friendly frontend UI            |
+| **Encrypted Data** | `/securedata`         | Secure volume for persistent data |
 
 ---
 
 ## 🔒 Managing the Encrypted Volume
 
-To **close and unmount**:
+To manually **unmount and close** the encrypted volume:
 
 ```bash
 sudo umount /securedata
@@ -125,17 +125,17 @@ sudo mount /dev/mapper/securedata /securedata
 
 ## 🛠️ Next Steps
 
-- Use `ollama pull <model>` to add more LLMs
-- Run your own dev containers or agents inside `/securedata`
-- Configure Open WebUI for multi-user access or secure reverse proxies
+- 🧠 Use `ollama pull <model>` to download the LLM(s) of your choice manually
+- 💬 Customize Open WebUI or enable multi-user support
+- ⚙️ Add your own dev containers to `/securedata` for secure development
 
 ---
 
 ## 📬 Need Help?
 
-- 📂 [Issues](https://github.com/<your-username>/<your-repo>/issues)
-- 📧 Feel free to reach out if you're stuck!
+- 📂 [Open an Issue](https://github.com/<your-username>/<your-repo>/issues)
+- 💬 Reach out via GitHub if you run into problems
 
 ---
 
-> ✅ This setup is great for AI engineers, teams, and solo tinkerers looking for **secure, self-hosted, GPU/CPU-compatible AI environments**.
+> ✅ Perfect for AI devs, teams, or tinkerers needing a **secure, self-hosted, GPU/CPU-compatible AI environment**.
