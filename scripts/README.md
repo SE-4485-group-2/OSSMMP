@@ -12,7 +12,7 @@ This project sets up a **secure, encrypted development environment** using Docke
 - 🧠 Installs [Ollama](https://ollama.com) (no models pulled by default)
 - 🌐 Deploys [Open WebUI](https://github.com/open-webui/open-webui) on **port 3000**
 - 🔄 Runs Ollama as a persistent system service via systemd
-- 💡 Users manage models and chat settings through Open WebUI
+- 💡 Users manage models and chat settings entirely through Open WebUI
 
 ---
 
@@ -92,34 +92,6 @@ sudo chmod 600 /root/.securekey
 ```
 
 > ⚠️ **Reminder:** Back up your key file securely. Without it, your encrypted volume is unrecoverable.
-
----
-
-## 🧠 Installed Services
-
-| Service        | URL/Path                 | Description                                         |
-|----------------|--------------------------|-----------------------------------------------------|
-| **Ollama**     | http://localhost:11434   | AI model backend (no model installed by default)    |
-| **Open WebUI** | http://<your-server-ip>:3000 | Web-based interface for managing and using models |
-| **Encrypted Volume** | `/securedata`     | Secure, persistent data storage                     |
-
----
-
-## 🔒 Managing the Encrypted Volume
-
-To manually unmount and close the encrypted volume:
-
-```bash
-sudo umount /securedata
-sudo cryptsetup luksClose securedata
-```
-
-To reopen and mount it later:
-
-```bash
-sudo cryptsetup luksOpen /securedata/container.img securedata --key-file /root/.securekey
-sudo mount /dev/mapper/securedata /securedata
-```
 
 ---
 
