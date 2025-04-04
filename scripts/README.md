@@ -9,7 +9,7 @@ This project sets up a **secure, encrypted development environment** using Docke
 - ✅ Detects GPU or defaults to CPU
 - 🔐 Creates and mounts encrypted storage (`/securedata`)
 - 🐳 Installs Docker and Docker Compose
-- 🧠 Installs [Ollama](https://ollama.com) without preloading models
+- 🧠 Installs [Ollama](https://ollama.com) (no models pulled by default)
 - 🌐 Launches [Open WebUI](https://github.com/open-webui/open-webui) on **port 3000**
 - 🔄 Runs Ollama as a system service using systemd
 - 💡 Supports both CPU-only and GPU-accelerated setups
@@ -82,26 +82,26 @@ This setup uses a **randomly generated encryption key**, stored at:
 /root/.securekey
 ```
 
-- 🔒 This key is used to encrypt/decrypt the `/securedata` volume using LUKS.
-- 🧠 If this key is lost or deleted, you will not be able to access the encrypted data.
-- 🔄 You can regenerate the key with:
+- 🔒 This key is used to encrypt and decrypt your data volume.
+- 🧠 If this key is lost or deleted, you will **not** be able to recover your data.
+- 🔄 You can regenerate the key (not recommended unless reinitializing) with:
 
 ```bash
 sudo head -c 64 /dev/urandom > /root/.securekey
 sudo chmod 600 /root/.securekey
 ```
 
-> 💡 This setup **does not use any default passphrase** like `changeme`. If you modify the script to use a passphrase instead of a keyfile, make sure you set a strong passphrase.
+> ⚠️ **Reminder:** Back up your key file securely if this setup is important. Without it, your encrypted volume is unrecoverable.
 
 ---
 
 ## 🧠 Installed Services
 
-| Service        | URL/Path                 | Description                     |
-|----------------|--------------------------|---------------------------------|
-| **Ollama**     | http://localhost:11434   | AI model backend (no models pulled by default) |
-| **Open WebUI** | http://localhost:3000    | Friendly frontend UI            |
-| **Encrypted Data** | `/securedata`         | Secure volume for persistent data |
+| Service        | URL/Path                 | Description                                         |
+|----------------|--------------------------|-----------------------------------------------------|
+| **Ollama**     | http://localhost:11434   | AI model backend (no model installed by default)    |
+| **Open WebUI** | http://localhost:3000    | Frontend interface for chatting with LLMs           |
+| **Encrypted Volume** | `/securedata`     | Secure, persistent data storage                     |
 
 ---
 
@@ -125,9 +125,9 @@ sudo mount /dev/mapper/securedata /securedata
 
 ## 🛠️ Next Steps
 
-- 🧠 Use `ollama pull <model>` to download the LLM(s) of your choice manually
-- 💬 Customize Open WebUI or enable multi-user support
-- ⚙️ Add your own dev containers to `/securedata` for secure development
+- 🧠 Pull a model using: `ollama pull <model>` (e.g., `mistral`, `llama2`, etc.)
+- 💬 Use Open WebUI to interact with your local models
+- ⚙️ Add custom dev containers or tools into `/securedata`
 
 ---
 
