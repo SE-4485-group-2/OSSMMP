@@ -79,8 +79,8 @@ info "Encrypted volume mounted at /securedata"
 info "Installing Ollama..."
 curl -fsSL https://ollama.com/install.sh | sh
 
-# Pull a base model (like llama3) to ensure ollama starts cleanly
-ollama pull llama3 || true
+# Skip pulling a default model; let the user choose manually later
+# ollama pull llama3 || true
 
 # Run Ollama in the background
 sudo tee /etc/systemd/system/ollama.service > /dev/null <<EOF
