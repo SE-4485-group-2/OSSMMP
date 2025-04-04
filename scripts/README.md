@@ -1,6 +1,6 @@
 # 🔐 Secure Shared Development Environment Setup
 
-This project sets up a **secure, encrypted development environment** using Docker, Ollama, and Open WebUI. It detects whether you're running a GPU or CPU machine, installs dependencies, creates an encrypted disk container, and launches an AI-ready interface.
+This project sets up a **secure, encrypted development environment** using Docker, Ollama, and Open WebUI. It detects GPU/CPU, installs dependencies, creates an encrypted container, and launches a private, browser-accessible AI interface — no command-line model setup needed.
 
 ---
 
@@ -10,9 +10,9 @@ This project sets up a **secure, encrypted development environment** using Docke
 - 🔐 Creates and mounts encrypted storage (`/securedata`)
 - 🐳 Installs Docker and Docker Compose
 - 🧠 Installs [Ollama](https://ollama.com) (no models pulled by default)
-- 🌐 Launches [Open WebUI](https://github.com/open-webui/open-webui) on **port 3000**
-- 🔄 Runs Ollama as a system service using systemd
-- 💡 Supports both CPU-only and GPU-accelerated setups
+- 🌐 Deploys [Open WebUI](https://github.com/open-webui/open-webui) on **port 3000**
+- 🔄 Runs Ollama as a persistent system service via systemd
+- 💡 Users manage models and chat settings through Open WebUI
 
 ---
 
@@ -91,7 +91,7 @@ sudo head -c 64 /dev/urandom > /root/.securekey
 sudo chmod 600 /root/.securekey
 ```
 
-> ⚠️ **Reminder:** Back up your key file securely if this setup is important. Without it, your encrypted volume is unrecoverable.
+> ⚠️ **Reminder:** Back up your key file securely. Without it, your encrypted volume is unrecoverable.
 
 ---
 
@@ -100,21 +100,21 @@ sudo chmod 600 /root/.securekey
 | Service        | URL/Path                 | Description                                         |
 |----------------|--------------------------|-----------------------------------------------------|
 | **Ollama**     | http://localhost:11434   | AI model backend (no model installed by default)    |
-| **Open WebUI** | http://localhost:3000    | Frontend interface for chatting with LLMs           |
+| **Open WebUI** | http://<your-server-ip>:3000 | Web-based interface for managing and using models |
 | **Encrypted Volume** | `/securedata`     | Secure, persistent data storage                     |
 
 ---
 
 ## 🔒 Managing the Encrypted Volume
 
-To manually **unmount and close** the encrypted volume:
+To manually unmount and close the encrypted volume:
 
 ```bash
 sudo umount /securedata
 sudo cryptsetup luksClose securedata
 ```
 
-To **reopen and mount** later:
+To reopen and mount it later:
 
 ```bash
 sudo cryptsetup luksOpen /securedata/container.img securedata --key-file /root/.securekey
@@ -125,9 +125,13 @@ sudo mount /dev/mapper/securedata /securedata
 
 ## 🛠️ Next Steps
 
-- 🧠 Pull a model using: `ollama pull <model>` (e.g., `mistral`, `llama2`, etc.)
-- 💬 Use Open WebUI to interact with your local models
-- ⚙️ Add custom dev containers or tools into `/securedata`
+- 🌐 Open your browser and go to: `http://<your-server-ip>:3000`
+- 🧠 From there, use **Open WebUI** to:
+  - Pull models like `mistral`, `llama2`, etc.
+  - Manage settings, tokens, and chat history
+  - Interact with LLMs through a clean interface
+
+> 🛑 You do **not** need to run `ollama pull` or configure anything from the command line — Open WebUI handles it all!
 
 ---
 
@@ -138,4 +142,4 @@ sudo mount /dev/mapper/securedata /securedata
 
 ---
 
-> ✅ Perfect for AI devs, teams, or tinkerers needing a **secure, self-hosted, GPU/CPU-compatible AI environment**.
+> ✅ Perfect for AI devs, teams, or tinkerers needing a **secure, self-hosted, GPU/CPU-compatible AI environment with minimal setup**.
