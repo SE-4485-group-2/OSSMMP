@@ -73,7 +73,25 @@ sudo cryptsetup luksOpen /securedata/container.img securedata --key-file "$KEY_F
 sudo mkfs.ext4 /dev/mapper/securedata
 sudo mount /dev/mapper/securedata /securedata
 
-info "Encrypted volume mounted at /securedata"
+# Configure Docker to use the encrypted storage location
+info "Configuring Docker to use /securedata/docker as Docker's data root..."
+sudo mkdir -p /securedata/docker
+echo '{ "data-root": "/securedata/docker" }' | sudo tee /etc/docker/daemon.json
+
+info "Stopping Docker and cleaning up old Docker data (if any)..."
+sudo systemctl stop docker
+sudo rm -rf /var/lib/docker
+
+info "Restarting Docker to apply encrypted storage path..."
+sudo systemctl start docker
+
+# Verify Docker is using the encrypted root
+DOCKER_ROOT=$(docker info --format '{{.DockerRootDir}}')
+if [[ "$DOCKER_ROOT" == /securedata/docker* ]]; then
+  info "Docker is now using encrypted storage at $DOCKER_ROOT"
+else
+  warn "Docker is NOT using the encrypted space. Current root is $DOCKER_ROOT"
+fi
 
 # Install Ollama
 info "Installing Ollama..."
